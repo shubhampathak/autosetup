@@ -3,7 +3,7 @@
 ##################################################################################################
 # Author: Shubham Pathak                                                                         # 
 # Description: Auto setup bash script to setup required programs after doing fresh install.      # 
-# Tested on Debian based distributions.                                                          #        
+# Tested against Debian based distributions like Ubuntu 16.04/18.04 and Kali Linux.              #        
 ##################################################################################################
 
 c='\e[32m' # Coloured echo (Green)
@@ -17,7 +17,7 @@ sudo apt install -y software-properties-common apt-transport-https build-essenti
 gsettings set org.gnome.desktop.interface show-battery-percentage true
 
 # Upgrade and Update Command
-echo -e "${c}Updating and upgrading before running post-install script."; $r
+echo -e "${c}Updating and upgrading before performing further operations."; $r
 sudo apt update && sudo apt upgrade -y
 sudo apt --fix-broken install -y
 
@@ -65,7 +65,7 @@ cd && cd tools
 git clone --depth 1 https://github.com/danielmiessler/SecLists.git 
 
 #Executing Install Dialog
-dialogbox=(whiptail --separate-output --ok-button "Install" --title "Auto Setup Script" --checklist "Please select required software(s):" 25 78 20)
+dialogbox=(whiptail --separate-output --ok-button "Install" --title "Auto Setup Script" --checklist "\nPlease select required software(s):\n(Press 'Space' to Select/Deselect, 'Enter' to Install and 'Esc' to Cancel)" 30 80 20)
 options=(1 "Visual Studio Code" off
 		 2 "Python2 and iPython" off
 		 3 "Python3" off
