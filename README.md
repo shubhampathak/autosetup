@@ -4,6 +4,8 @@ Auto setup is a simple bash script (compatible with Debian based distributions l
 > Script is completely based on InfoSec/Bug Bounty reconnaissance tools I use regularly.
 > You can Modify it according to your need.
 
+![AutoSetup.sh](https://user-images.githubusercontent.com/20816337/58801810-399ecb80-8629-11e9-8dd7-eb6169195a9b.png)
+
 ## Usage
 
 ```bash
