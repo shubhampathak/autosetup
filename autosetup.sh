@@ -14,7 +14,9 @@ echo -e "${c}Installing complete dependencies pack."; $r
 sudo apt install -y software-properties-common apt-transport-https build-essential checkinstall libreadline-gplv2-dev libxssl libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev autoconf automake libtool make g++ unzip flex bison gcc libssl-dev libyaml-dev libreadline6-dev zlib1g zlib1g-dev libncurses5-dev libffi-dev libgdbm5 libgdbm-dev libpq-dev libpcap-dev libmagickwand-dev libappindicator3-1 libindicator3-7 imagemagick xdg-utils
 
 # Show Battery Percentage on Top Bar [Debian (gnome)]
-gsettings set org.gnome.desktop.interface show-battery-percentage true
+if [ $XDG_CURRENT_DESKTOP == 'GNOME' ]; then
+	gsettings set org.gnome.desktop.interface show-battery-percentage true
+fi
 
 # Upgrade and Update Command
 echo -e "${c}Updating and upgrading before performing further operations."; $r
@@ -32,15 +34,21 @@ export PATH=$PATH:/snap/bin
 sudo snap refresh
 
 #Setting up Git
-echo -e "${c}Setting up Git"; $r
-(set -x; git --version )
-echo -e "${c}Setting up global git config at ~/.gitconfig"; $r
-git config --global color.ui true
-read -p "Enter Your Full Name: " name
-read -p "Enter Your Email: " email
-git config --global user.name "$name"
-git config --global user.email "$email"
-echo -e "${c}Git Setup Successfully!"; $r
+read -p "${c}Do you want to setup Git global config? (y/n): " -r; $r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+	echo -e "${c}Setting up Git"; $r
+	(set -x; git --version )
+	echo -e "${c}Setting up global git config at ~/.gitconfig"; $r
+	git config --global color.ui true
+	read -p "Enter Your Full Name: " name
+	read -p "Enter Your Email: " email
+	git config --global user.name "$name"
+	git config --global user.email "$email"
+	echo -e "${c}Git Setup Successfully!"; $r
+else
+	echo -e "${c}Skipping!"; $r && :
+fi
 
 #Installing curl and wget
 echo -e "${c}Installing Curl and wget"; $r
@@ -60,9 +68,14 @@ cd
 mkdir tools
 
 #Downloading SecLists
-echo -e "${c}Downloading SecLists in $HOME/tools"; $r
-cd && cd tools 
-git clone --depth 1 https://github.com/danielmiessler/SecLists.git 
+read -p "${c}Do you want to download Daniel Miessler's SecLists (quite useful during recon)?: " -r; $r
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+	echo -e "${c}Downloading SecLists in $HOME/tools"; $r
+	cd && cd tools 
+	git clone --depth 1 https://github.com/danielmiessler/SecLists.git
+else
+ 	echo -e "${c}Skipping!"; $r && :
+fi
 
 #Executing Install Dialog
 dialogbox=(whiptail --separate-output --ok-button "Install" --title "Auto Setup Script" --checklist "\nPlease select required software(s):\n(Press 'Space' to Select/Deselect, 'Enter' to Install and 'Esc' to Cancel)" 30 80 20)
