@@ -58,3 +58,8 @@ But, before opening the dialogbox, it'll perform the following operations:
 ## Note
 
 Tested on Ubuntu 16.04, Ubuntu 18.04, Kali Linux Vagrant boxes, but it should work with other Debian based distributions as well.
+
+## Contributions
+
+We hope that you will consider contributing to autosetup. Please read this short overview [Contribution Guidelines](https://github.com/shubhampathak/autosetup/blob/master/CONTRIBUTING.md) for some information about how to get started 
+
