@@ -136,11 +136,11 @@ do
 		;;
 
 		4) 
-		echo -e "${c}Installing Go Lang version 1.12.5"; $r #Change the version if you want.
+		echo -e "${c}Installing Go Lang version 1.12.7"; $r #Change the version if you want.
 		cd
-		wget https://dl.google.com/go/go1.12.5.linux-amd64.tar.gz
-		sudo tar -C /usr/local -xzf go1.12.5.linux-amd64.tar.gz
-		sudo rm -f go1.12.5.linux-amd64.tar.gz
+		wget https://dl.google.com/go/go1.12.7.linux-amd64.tar.gz
+		sudo tar -C /usr/local -xzf go1.12.7.linux-amd64.tar.gz
+		sudo rm -f go1.12.7.linux-amd64.tar.gz
 		echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile
 		source ~/.profile
 		echo -e "${c}Verifying Go Installation"; $r
