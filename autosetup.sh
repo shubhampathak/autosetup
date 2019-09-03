@@ -82,7 +82,7 @@ dialogbox=(whiptail --separate-output --ok-button "Install" --title "Auto Setup 
 options=(1 "Visual Studio Code" off
 		 2 "Python2 and iPython" off
 		 3 "Python3" off
-		 4 "GoLang" off
+		 4 "Go" off
 		 5 "Rbenv" off
 		 6 "JRE & JDK" off
 		 7 "Masscan" off
@@ -136,11 +136,11 @@ do
 		;;
 
 		4) 
-		echo -e "${c}Installing Go Lang version 1.12.7"; $r #Change the version if you want.
+		echo -e "${c}Installing Go version 1.12.9"; $r #Change the version if you want.
 		cd
-		wget https://dl.google.com/go/go1.12.7.linux-amd64.tar.gz
-		sudo tar -C /usr/local -xzf go1.12.7.linux-amd64.tar.gz
-		sudo rm -f go1.12.7.linux-amd64.tar.gz
+		wget https://dl.google.com/go/go1.12.9.linux-amd64.tar.gz
+		sudo tar -C /usr/local -xzf go1.12.9.linux-amd64.tar.gz
+		sudo rm -f go1.12.9.linux-amd64.tar.gz
 		echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile
 		source ~/.profile
 		echo -e "${c}Verifying Go Installation"; $r
@@ -162,7 +162,7 @@ do
 		git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 		echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
 		source ~/.bashrc
-		rbenv install 2.4.4 #Installing required version of Ruby
+		rbenv install 2.6.4 #Installing required version of Ruby
 		( set -x ; ruby -v )
 		echo -e "${c}rbenv and defined ruby version setup Successfully."; $r
 		;;
