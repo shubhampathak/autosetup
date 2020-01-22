@@ -32,9 +32,9 @@ But, before opening the dialogbox, it'll perform the following operations:
 * Visual Studio Code
 * Python2 and iPython
 * Python3
-* GoLang
+* Go
 * Rbenv
-* JRE & JDK
+* Amazon Corretto (OpenJDK)
 * Masscan
 * Chrome
 * NMAP

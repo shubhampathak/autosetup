@@ -84,7 +84,7 @@ options=(1 "Visual Studio Code" off
 		 3 "Python3" off
 		 4 "Go" off
 		 5 "Rbenv" off
-		 6 "JRE & JDK" off
+		 6 "Amazon Corretto" off
 		 7 "Masscan" off
 		 8 "Chrome" off
 		 9 "NMAP" off
@@ -168,11 +168,11 @@ do
 		;;
 
 		6) 
-		echo -e "${c}Setting up JRE & JDK"; $r
-		sudo apt install -y default-jre
-		sudo apt install -y default-jdk
+		echo -e "${c}Setting up Amazon Corretto (OpenJDK)"; $r
+		wget -O- https://apt.corretto.aws/corretto.key | sudo apt-key add -
+		echo "deb https://apt.corretto.aws stable main" | sudo tee /etc/apt/sources.list.d/corretto.list
 		( set -x ; java -version )
-		echo -e "${c}Java Installed Successfully!"; $r
+		echo -e "${c}Amazon Corretto Installed Successfully!"; $r
 		;;
 
 		7) 
