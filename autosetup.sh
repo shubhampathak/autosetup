@@ -101,7 +101,7 @@ options=(1 "Visual Studio Code" off
 		 9 "NMAP" off
 		 10 "Drozer Framework" off
 		 11 "Jadx" off
-		 12 "Ettercap" off
+		 12 "httprobe" off
 		 13 "SQLMAP" off
 		 14 "Yara" off
 		 15 "i3 Window Manager" off
@@ -219,8 +219,13 @@ do
 		;;
 
 		12) 
-		echo -e "${c}Installing Ettercap"; $r
-		sudo apt install -y ettercap-graphical
+		echo -e "${c}Installing httprobe"; $r
+		echo -e "${c}Checking if Go is installed."
+		if [[ $(go version | grep "version") != "version" ]]; then
+			echo -e "${c}Go is not installed, installing it first."
+		    installGo
+		fi
+		go get -u github.com/tomnomnom/httprobe
 		;;
 
 		13) 

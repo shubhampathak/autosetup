@@ -40,7 +40,7 @@ But, before opening the dialogbox, it'll perform the following operations:
 * NMAP
 * Drozer Framework
 * Jadx
-* Ettercap
+* httprobe
 * SQLMAP
 * Yara
 * i3 Window Manager
