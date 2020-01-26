@@ -136,15 +136,14 @@ do
 		;;
 
 		4) 
-		echo -e "${c}Installing Go version 1.12.9"; $r #Change the version if you want.
+		echo -e "${c}Installing Go version 1.13.6"; $r #Change the version if you want.
 		cd
-		wget https://dl.google.com/go/go1.12.9.linux-amd64.tar.gz
-		sudo tar -C /usr/local -xzf go1.12.9.linux-amd64.tar.gz
-		sudo rm -f go1.12.9.linux-amd64.tar.gz
+		sudo rm -rf /usr/local/go
+		wget https://dl.google.com/go/go1.13.6.linux-amd64.tar.gz
+		sudo tar -C /usr/local -xzf go1.13.6.linux-amd64.tar.gz
+		sudo rm -f go1.13.6.linux-amd64.tar.gz
 		echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile
 		source ~/.profile
-		echo -e "${c}Verifying Go Installation"; $r
-		( set -x ; go version )
 		echo -e "${c}Go Installed Successfully."; $r
 		;;
 
