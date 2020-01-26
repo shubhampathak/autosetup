@@ -44,7 +44,7 @@ But, before opening the dialogbox, it'll perform the following operations:
 * SQLMAP
 * Yara
 * i3 Window Manager
-* EyeWitness
+* Aquatone
 * Skype
 * NodeJS
 * Sublime Text 3

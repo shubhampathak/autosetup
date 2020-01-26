@@ -65,7 +65,7 @@ sudo apt install -y android-tools-adb android-tools-fastboot
 #Creating Directory Inside $HOME
 echo -e "${c}Creating Directory named 'tools' inside $HOME directory."; $r
 cd
-mkdir tools
+mkdir -p tools
 
 #Downloading SecLists
 read -p "${c}Do you want to download Daniel Miessler's SecLists (quite useful during recon)?: " -r; $r
@@ -76,6 +76,17 @@ if [[ $REPLY =~ ^[Yy]$ ]]; then
 else
  	echo -e "${c}Skipping!"; $r && :
 fi
+
+installGo() {
+	echo -e "${c}Installing Go version 1.13.6"; $r #Change the version if you want.
+	cd
+	wget -q https://dl.google.com/go/go1.13.6.linux-amd64.tar.gz
+	sudo tar -C /usr/local -xzf go1.13.6.linux-amd64.tar.gz
+	sudo rm -f go1.13.6.linux-amd64.tar.gz
+	echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile
+	source ~/.profile
+	echo -e "${c}Go Installed Successfully."; $r
+}
 
 #Executing Install Dialog
 dialogbox=(whiptail --separate-output --ok-button "Install" --title "Auto Setup Script" --checklist "\nPlease select required software(s):\n(Press 'Space' to Select/Deselect, 'Enter' to Install and 'Esc' to Cancel)" 30 80 20)
@@ -94,7 +105,7 @@ options=(1 "Visual Studio Code" off
 		 13 "SQLMAP" off
 		 14 "Yara" off
 		 15 "i3 Window Manager" off
-		 16 "EyeWitness" off
+		 16 "Aquatone" off
 		 17 "Skype" off
 		 18 "NodeJS" off
 		 19 "Sublime Text 3" off
@@ -135,16 +146,8 @@ do
 		( set -x ; python3 --version )
 		;;
 
-		4) 
-		echo -e "${c}Installing Go version 1.13.6"; $r #Change the version if you want.
-		cd
-		sudo rm -rf /usr/local/go
-		wget https://dl.google.com/go/go1.13.6.linux-amd64.tar.gz
-		sudo tar -C /usr/local -xzf go1.13.6.linux-amd64.tar.gz
-		sudo rm -f go1.13.6.linux-amd64.tar.gz
-		echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile
-		source ~/.profile
-		echo -e "${c}Go Installed Successfully."; $r
+		4)
+		installGo 
 		;;
 
 		5) 
@@ -248,12 +251,14 @@ do
 		;;
 
 		16) 
-		echo -e "${c}Installing EyeWitness"; $r
-		cd && cd tools
-		git clone --depth 1 https://github.com/FortyNorthSecurity/EyeWitness.git
-		cd EyeWitness/setup
-		sudo ./setup.sh
-		echo -e "${c}EyeWitness Installed Successfully in $HOME/tools/EyeWitness."; $r
+		echo -e "${c}Installing Aquatone"; $r
+		echo -e "${c}Checking if Go is installed."
+		if [[ $(go version | grep "version") != "version" ]]; then
+			echo -e "${c}Go is not installed, installing it first."
+		    installGo
+		fi
+		go get -u github.com/michenriksen/aquatone
+		echo -e "${c}Aquatone Installed Successfully."; $r
 		;;
 
 		17) 
