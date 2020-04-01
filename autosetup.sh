@@ -221,7 +221,7 @@ do
 		12) 
 		echo -e "${c}Installing httprobe"; $r
 		echo -e "${c}Checking if Go is installed."
-		if [[ $(go version | grep "version") != "version" ]]; then
+		if [[ -z $(which go) ]]; then
 			echo -e "${c}Go is not installed, installing it first."
 		    installGo
 		fi
@@ -258,7 +258,7 @@ do
 		16) 
 		echo -e "${c}Installing Aquatone"; $r
 		echo -e "${c}Checking if Go is installed."
-		if [[ $(go version | grep "version") != "version" ]]; then
+		if [[ -z $(which go) ]]; then
 			echo -e "${c}Go is not installed, installing it first."
 		    installGo
 		fi
