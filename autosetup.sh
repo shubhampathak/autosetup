@@ -78,43 +78,56 @@ else
 fi
 
 installGo() {
-	echo -e "${c}Installing Go version 1.13.6"; $r #Change the version if you want.
+	echo -e "${c}Installing Go version 1.14.1"; $r #Latest version at the time of updating.
 	cd
-	wget -q https://dl.google.com/go/go1.13.6.linux-amd64.tar.gz
-	sudo tar -C /usr/local -xzf go1.13.6.linux-amd64.tar.gz
-	sudo rm -f go1.13.6.linux-amd64.tar.gz
+	wget -q https://dl.google.com/go/go1.14.1.linux-amd64.tar.gz
+	sudo tar -C /usr/local -xzf go1.14.1.linux-amd64.tar.gz
+	sudo rm -f go1.14.1.linux-amd64.tar.gz
 	echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile
+	echo -e "${c}Setting up GOPATH as $HOME/go"; $r
+	echo "export GOPATH=$HOME/go" >> ~/.profile
 	source ~/.profile
 	echo -e "${c}Go Installed Successfully."; $r
 }
 
+checkGo() {
+	echo -e "${c}Checking if Go is installed."; $r
+	source ~/.profile
+	source ~/.bashrc
+	if [[ -z $(which go) ]]; then
+		echo -e "${c}Go is not installed, installing it first."; $r
+		installGo
+	else
+		echo -e "${c}Go is already installed, Skipping."; $r
+	fi
+}
 #Executing Install Dialog
 dialogbox=(whiptail --separate-output --ok-button "Install" --title "Auto Setup Script" --checklist "\nPlease select required software(s):\n(Press 'Space' to Select/Deselect, 'Enter' to Install and 'Esc' to Cancel)" 30 80 20)
 options=(1 "Visual Studio Code" off
-		 2 "Python2 and iPython" off
-		 3 "Python3" off
-		 4 "Go" off
-		 5 "Rbenv" off
-		 6 "Amazon Corretto" off
-		 7 "Masscan" off
-		 8 "Chrome" off
-		 9 "NMAP" off
-		 10 "Drozer Framework" off
-		 11 "Jadx" off
-		 12 "httprobe" off
-		 13 "SQLMAP" off
-		 14 "Yara" off
-		 15 "i3 Window Manager" off
-		 16 "Aquatone" off
-		 17 "Skype" off
-		 18 "NodeJS" off
-		 19 "Sublime Text 3" off
-		 20 "Wireshark" off
-         21 "Amass" off
-         22 "Knockpy" off
-         23 "Dirsearch" off
-         24 "LinkFinder" off
-         25 "Virtual Box" off)
+	2 "Python2 and iPython" off
+	3 "Python3" off
+	4 "Go" off
+	5 "Rbenv" off
+	6 "Amazon Corretto" off
+	7 "Masscan" off
+	8 "Chrome" off
+	9 "NMAP" off
+	10 "Drozer Framework" off
+	11 "Jadx" off
+	12 "httprobe" off
+	13 "SQLMAP" off
+	14 "Yara" off
+	15 "i3 Window Manager" off
+	16 "Aquatone" off
+	17 "Skype" off
+	18 "NodeJS" off
+	19 "Sublime Text 3" off
+	20 "Wireshark" off
+	21 "Amass" off
+	22 "Knockpy" off
+	23 "Dirsearch" off
+	24 "LinkFinder" off
+	25 "Virtual Box" off)
 
 selected=$("${dialogbox[@]}" "${options[@]}" 2>&1 >/dev/tty)
 
@@ -220,11 +233,7 @@ do
 
 		12) 
 		echo -e "${c}Installing httprobe"; $r
-		echo -e "${c}Checking if Go is installed."
-		if [[ -z $(which go) ]]; then
-			echo -e "${c}Go is not installed, installing it first."
-		    installGo
-		fi
+		checkGo
 		go get -u github.com/tomnomnom/httprobe
 		;;
 
@@ -257,11 +266,7 @@ do
 
 		16) 
 		echo -e "${c}Installing Aquatone"; $r
-		echo -e "${c}Checking if Go is installed."
-		if [[ -z $(which go) ]]; then
-			echo -e "${c}Go is not installed, installing it first."
-		    installGo
-		fi
+		checkGo
 		go get -u github.com/michenriksen/aquatone
 		echo -e "${c}Aquatone Installed Successfully."; $r
 		;;
