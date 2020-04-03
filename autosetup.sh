@@ -83,9 +83,9 @@ installGo() {
 	wget -q https://dl.google.com/go/go1.14.1.linux-amd64.tar.gz
 	sudo tar -C /usr/local -xzf go1.14.1.linux-amd64.tar.gz
 	sudo rm -f go1.14.1.linux-amd64.tar.gz
-	echo "export PATH=$PATH:/usr/local/go/bin" >> ~/.profile
 	echo -e "${c}Setting up GOPATH as $HOME/go"; $r
 	echo "export GOPATH=$HOME/go" >> ~/.profile
+	echo "export PATH=$PATH:$GOPATH/bin:/usr/local/go/bin" >> ~/.profile
 	source ~/.profile
 	echo -e "${c}Go Installed Successfully."; $r
 }
