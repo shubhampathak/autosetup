@@ -7,7 +7,13 @@
 ##################################################################################################
 
 c='\e[32m' # Coloured echo (Green)
+y=$'\033[38;5;11m' # Coloured echo (yellow)
 r='tput sgr0' #Reset colour after echo
+
+#Display Banner
+if [[ ! -z $(which figlet) ]]; then
+    figlet AutoSetup
+fi
 
 # Required dependencies for all softwares (important)
 echo -e "${c}Installing complete dependencies pack."; $r
@@ -34,11 +40,9 @@ export PATH=$PATH:/snap/bin
 sudo snap refresh
 
 #Setting up Git
-read -p "${c}Do you want to setup Git global config? (y/n): " -r; $r
+read -p "${y}Do you want to setup Git global config? (y/n): " -r; $r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
-	echo -e "${c}Setting up Git"; $r
-	(set -x; git --version )
 	echo -e "${c}Setting up global git config at ~/.gitconfig"; $r
 	git config --global color.ui true
 	read -p "Enter Your Full Name: " name
@@ -66,16 +70,6 @@ sudo apt install -y android-tools-adb android-tools-fastboot
 echo -e "${c}Creating Directory named 'tools' inside $HOME directory."; $r
 cd
 mkdir -p tools
-
-#Downloading SecLists
-read -p "${c}Do you want to download Daniel Miessler's SecLists (quite useful during recon)?: " -r; $r
-if [[ $REPLY =~ ^[Yy]$ ]]; then
-	echo -e "${c}Downloading SecLists in $HOME/tools"; $r
-	cd && cd tools 
-	git clone --depth 1 https://github.com/danielmiessler/SecLists.git
-else
- 	echo -e "${c}Skipping!"; $r && :
-fi
 
 installGo() {
         # $version will fetch the latest version of Go from the official download page.
@@ -106,8 +100,8 @@ checkGo() {
 #Executing Install Dialog
 dialogbox=(whiptail --separate-output --ok-button "Install" --title "Auto Setup Script" --checklist "\nPlease select required software(s):\n(Press 'Space' to Select/Deselect, 'Enter' to Install and 'Esc' to Cancel)" 30 80 20)
 options=(1 "Visual Studio Code" off
-	2 "Python2 and iPython" off
-	3 "Python3" off
+	2 "SecLists" off
+	3 "Python3 and iPython" off
 	4 "Go" off
 	5 "Rbenv" off
 	6 "Amazon Corretto" off
@@ -143,22 +137,21 @@ do
 		sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
 		sudo apt update -y
 		sudo apt install -y code
-                sudo rm -f microsoft.gpg
+        sudo rm -f microsoft.gpg
 		echo -e "${c}Visual Studio Code Installed Successfully."; $r
 		;;
 
-		2) 
-		echo -e "${c}Installing Python2 and iPython"; $r
-		sudo apt install -y python-pip
-		( set -x ; pip --version )
-		sudo pip install ipython
+		2)
+		echo -e "${c}Downloading Daniel Miessler's SecLists in $HOME/tools"; $r
+		cd && cd tools 
+		git clone --depth 1 https://github.com/danielmiessler/SecLists.git
 		;;
 
 		3) 
-		echo -e "${c}Installing Python3"; $r
+		echo -e "${c}Installing Python3 and iPython"; $r
 		( set -x ; sudo add-apt-repository ppa:deadsnakes/ppa -y )
 		sudo apt install -y python3
-		( set -x ; python3 --version )
+		sudo pip install ipython
 		;;
 
 		4)
