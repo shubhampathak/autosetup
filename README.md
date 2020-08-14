@@ -23,14 +23,13 @@ But, before opening the dialogbox, it'll perform the following operations:
 1. Install Snap, Curl, wget, DNS-Utils, ADB and Fastboot.
 2. Setup Git Global Config. (It'll ask for your name and email)*
 3. Install all the required dependencies needed for the list of softwares.
-4. Download [Daniel Miessler's SecLists](https://github.com/danielmiessler/SecLists) in $HOME/tools. (Useful duing recon and hunting)*
 
-* You can skip 2 & 4 if you want.
+**You can skip 2 if you want.*
 
 ## List
 
 * Visual Studio Code
-* Python2 and iPython
+* Daniel Miessler's SecLists
 * Python3
 * Go
 * Rbenv
