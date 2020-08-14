@@ -78,11 +78,13 @@ else
 fi
 
 installGo() {
-	echo -e "${c}Installing Go version 1.14.1"; $r #Latest version at the time of updating.
+        # $version will fetch the latest version of Go from the official download page.
+        version=$(curl -s https://golang.org/dl/ | grep -o "[0-9.]*linux-amd64.tar.gz" | head -n1)
+	echo -e "${c}Installing Go version $version"; $r
 	cd
-	wget -q https://dl.google.com/go/go1.14.1.linux-amd64.tar.gz
-	sudo tar -C /usr/local -xzf go1.14.1.linux-amd64.tar.gz
-	sudo rm -f go1.14.1.linux-amd64.tar.gz
+	wget -q https://dl.google.com/go/$version
+	sudo tar -C /usr/local -xzf $version
+	sudo rm -f $version
 	echo -e "${c}Setting up GOPATH as $HOME/go"; $r
 	echo "export GOPATH=$HOME/go" >> ~/.profile
 	echo "export PATH=$PATH:$GOPATH/bin:/usr/local/go/bin" >> ~/.profile
