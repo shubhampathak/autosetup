@@ -3,8 +3,10 @@
 ##################################################################################################
 # Author: Shubham Pathak                                                                         # 
 # Description: Auto setup bash script to setup required programs after doing fresh install.      # 
-# Tested against Debian based distributions like Ubuntu 16.04/18.04 and Kali Linux.              #        
+# Tested against Debian based distributions like Ubuntu and Kali Linux.                          #        
 ##################################################################################################
+
+set -e
 
 c='\e[32m' # Coloured echo (Green)
 y=$'\033[38;5;11m' # Coloured echo (yellow)
@@ -13,14 +15,27 @@ r='tput sgr0' #Reset colour after echo
 #Display Banner
 if [[ ! -z $(which figlet) ]]; then
     figlet AutoSetup
+    echo -e "${y} - By Shubham Pathak"
+else 
+echo -e "\n\n\n\n
+    _         _       ____       _
+   / \  _   _| |_ ___/ ___|  ___| |_ _   _ _ __
+  / _ \| | | | __/ _ \___ \ / _ \ __| | | | '_ |
+ / ___ \ |_| | || (_) |__) |  __/ |_| |_| | |_) |
+/_/   \_\__,_|\__\___/____/ \___|\__|\__,_| .__/
+                                          |_| 
+						  - By Shubham Pathak\n\n\n"
 fi
+
+# 3 seconds wait time to start the setup
+for i in `seq 3 -1 1` ; do echo -ne "$i\rThe setup will start in... " ; sleep 1 ; done
 
 # Required dependencies for all softwares (important)
 echo -e "${c}Installing complete dependencies pack."; $r
-sudo apt install -y software-properties-common apt-transport-https build-essential checkinstall libreadline-gplv2-dev libxssl libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev autoconf automake libtool make g++ unzip flex bison gcc libssl-dev libyaml-dev libreadline6-dev zlib1g zlib1g-dev libncurses5-dev libffi-dev libgdbm5 libgdbm-dev libpq-dev libpcap-dev libmagickwand-dev libappindicator3-1 libindicator3-7 imagemagick xdg-utils
+sudo apt install -y software-properties-common apt-transport-https build-essential checkinstall libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libc6-dev libbz2-dev autoconf automake libtool make g++ unzip flex bison gcc libyaml-dev libreadline-dev zlib1g zlib1g-dev libncurses5-dev libffi-dev libgdbm-dev libpq-dev libpcap-dev libmagickwand-dev libappindicator3-1 libindicator3-7 libcurl4 libcurl4-openssl-dev mlocate imagemagick xdg-utils
 
 # Show Battery Percentage on Top Bar [Debian (gnome)]
-if [ $XDG_CURRENT_DESKTOP == 'GNOME' ]; then
+if [[ $XDG_CURRENT_DESKTOP =~ 'GNOME' ]]; then
 	gsettings set org.gnome.desktop.interface show-battery-percentage true
 fi
 
@@ -28,16 +43,6 @@ fi
 echo -e "${c}Updating and upgrading before performing further operations."; $r
 sudo apt update && sudo apt upgrade -y
 sudo apt --fix-broken install -y
-
-#Snap Installation & Setup
-echo -e "${c}Installing Snap & setting up."; $r
-sudo apt install -y snapd
-sudo systemctl start snapd
-sudo systemctl enable snapd
-sudo systemctl start apparmor
-sudo systemctl enable apparmor
-export PATH=$PATH:/snap/bin
-sudo snap refresh
 
 #Setting up Git
 read -p "${y}Do you want to setup Git global config? (y/n): " -r; $r
@@ -58,9 +63,9 @@ fi
 echo -e "${c}Installing Curl and wget"; $r
 sudo apt-get install -y wget curl
 
-#Installing dig
-echo -e "${c}Installing DNS Utils"; $r
-sudo apt install -y dnsutils
+#Installing dig and net-tools
+echo -e "${c}Installing DNS Utils and net-tools"; $r
+sudo apt install -y dnsutils net-tools
 
 #Installing ADB and Fastboot
 echo -e "${c}Installing ADB and Fastboot"; $r
@@ -72,8 +77,8 @@ cd
 mkdir -p tools
 
 installGo() {
-        # $version will fetch the latest version of Go from the official download page.
-        version=$(curl -s https://golang.org/dl/ | grep -o "go[0-9.]*linux-amd64.tar.gz" | head -n1)
+    # $version will fetch the latest version of Go from the official download page.
+    version=$(curl -s https://golang.org/dl/ | grep -o "go[0-9.]*linux-amd64.tar.gz" | head -n1)
 	echo -e "${c}Installing Go version $version"; $r
 	cd
 	wget -q https://dl.google.com/go/$version
@@ -82,26 +87,55 @@ installGo() {
 	echo -e "${c}Setting up GOPATH as $HOME/go"; $r
 	echo "export GOPATH=$HOME/go" >> ~/.profile
 	echo "export PATH=$PATH:$GOPATH/bin:/usr/local/go/bin" >> ~/.profile
+	echo "export GOBIN=$HOME/go/bin" >> ~/.profile
+	echo "export GOROOT=/usr/local/go" >> ~/.profile
 	source ~/.profile
 	echo -e "${c}Go Installed Successfully."; $r
 }
 
-checkGo() {
-	echo -e "${c}Checking if Go is installed."; $r
+installPython3() {
+	sudo apt install -y python3
+}
+
+installCorretto() {
+	echo -e "${c}Setting up Amazon Corretto (OpenJDK)"; $r
+	wget -O- https://apt.corretto.aws/corretto.key | sudo apt-key add -
+	sudo add-apt-repository 'deb https://apt.corretto.aws stable main'
+	sudo apt update; sudo apt install -y java-16-amazon-corretto-jdk
+    ( set -x ; java -version )
+    echo -e "${c}Amazon Corretto Installed Successfully!"; $r
+}
+
+installSnap() {
+	#Snap Installation & Setup
+	echo -e "${c}Installing Snap & setting up."; $r
+	sudo apt install -y snapd
+	sudo systemctl start snapd
+	sudo systemctl enable snapd
+	sudo systemctl start apparmor
+	sudo systemctl enable apparmor
+	export PATH=$PATH:/snap/bin
+	sudo snap refresh
+}
+
+checkInstalled() {
+	echo -e "${c}Checking if $1 is installed."; $r
 	source ~/.profile
 	source ~/.bashrc
-	if [[ -z $(which go) ]]; then
-		echo -e "${c}Go is not installed, installing it first."; $r
-		installGo
+	if [[ -z $(which $1) ]]; then
+			echo -e "${c}$1 is not installed, installing it first."; $r
+			$2
 	else
-		echo -e "${c}Go is already installed, Skipping."; $r
+			echo -e "${c}$1 is already installed, Skipping."; $r
 	fi
 }
+
+
 #Executing Install Dialog
 dialogbox=(whiptail --separate-output --ok-button "Install" --title "Auto Setup Script" --checklist "\nPlease select required software(s):\n(Press 'Space' to Select/Deselect, 'Enter' to Install and 'Esc' to Cancel)" 30 80 20)
 options=(1 "Visual Studio Code" off
 	2 "SecLists" off
-	3 "Python3 and iPython" off
+	3 "Python3, pip3, venv & iPython" off
 	4 "Go" off
 	5 "Rbenv" off
 	6 "Amazon Corretto" off
@@ -132,12 +166,8 @@ do
 	case $choices in
 		1) 
 		echo -e "${c}Installing Visual Studio Code"; $r
-		curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
-		sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
-		sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" > /etc/apt/sources.list.d/vscode.list'
-		sudo apt update -y
-		sudo apt install -y code
-        sudo rm -f microsoft.gpg
+		checkInstalled snap installSnap
+		sudo snap install code --classic
 		echo -e "${c}Visual Studio Code Installed Successfully."; $r
 		;;
 
@@ -148,10 +178,12 @@ do
 		;;
 
 		3) 
-		echo -e "${c}Installing Python3 and iPython"; $r
-		( set -x ; sudo add-apt-repository ppa:deadsnakes/ppa -y )
-		sudo apt install -y python3
+		echo -e "${c}Installing Python3, Python3-pip and iPython"; $r
+		installPython3
+		sudo apt install -y python3-pip python3-setuptools
 		sudo pip install ipython
+		echo -e "${c}Installing development environment and virtualenv for Python"; $r
+		sudo apt install -y build-essential libssl-dev libffi-dev python3-dev python3-venv
 		;;
 
 		4)
@@ -172,17 +204,15 @@ do
 		git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 		echo 'export PATH="$HOME/.rbenv/plugins/ruby-build/bin:$PATH"' >> ~/.bashrc
 		source ~/.bashrc
-		rbenv install 2.6.4 #Installing required version of Ruby
+		rbenv install 2.6.6
+		rbenv install 3.0.1 #Installing required version of Ruby 
+		rbenv global 3.0.1
 		( set -x ; ruby -v )
 		echo -e "${c}rbenv and defined ruby version setup Successfully."; $r
 		;;
 
 		6) 
-		echo -e "${c}Setting up Amazon Corretto (OpenJDK)"; $r
-		wget -O- https://apt.corretto.aws/corretto.key | sudo apt-key add -
-		echo "deb https://apt.corretto.aws stable main" | sudo tee /etc/apt/sources.list.d/corretto.list
-		( set -x ; java -version )
-		echo -e "${c}Amazon Corretto Installed Successfully!"; $r
+		installCorretto
 		;;
 
 		7) 
@@ -191,6 +221,7 @@ do
 		git clone --depth 1 https://github.com/robertdavidgraham/masscan
 		cd masscan
 		make
+		sudo make install
 		echo -e "${c}Masscan Installed Successfully."; $r
 		;;
 
@@ -219,6 +250,7 @@ do
 
 		11) 
 		echo -e "${c}Installing JADX"; $r
+		checkInstalled java installCorretto
 		cd && cd tools
 		git clone --depth 1 https://github.com/skylot/jadx.git
 		cd jadx
@@ -228,8 +260,8 @@ do
 
 		12) 
 		echo -e "${c}Installing httprobe"; $r
-		checkGo
-		go get -u github.com/tomnomnom/httprobe
+		checkInstalled go installGo
+		go install github.com/tomnomnom/httprobe@latest
 		;;
 
 		13) 
@@ -261,8 +293,10 @@ do
 
 		16) 
 		echo -e "${c}Installing Aquatone"; $r
-		checkGo
-		go get -u github.com/michenriksen/aquatone
+		cd && wget https://github.com/michenriksen/aquatone/releases/download/v1.7.0/aquatone_linux_amd64_1.7.0.zip
+		unzip aquatone_linux_amd64_1.7.0.zip -d /tmp
+		sudo cp /tmp/aquatone /usr/local/bin
+	    rm -f aquatone_linux_amd64_1.7.0.zip
 		echo -e "${c}Aquatone Installed Successfully."; $r
 		;;
 
@@ -302,16 +336,18 @@ do
 
 		21)
 		echo -e "${c}Installing Amass"; $r
+		checkInstalled snap installSnap
 		sudo snap install amass
 		;;
 
 		22)
 		echo -e "${c}Installing Knockpy in $HOME/tools"; $r
 		cd && cd tools
-		sudo apt install -y python-dnspython
+		sudo apt install -y python-dnspython python3-dnspython python3-setuptools python3-dev
 		git clone --depth 1 https://github.com/guelfoweb/knock.git
 		cd knock
-		sudo python setup.py install
+		checkInstalled python3 installPython3
+		sudo python3 setup.py install
 		echo -e "${c}Knockpy Installed Successfully."; $r
 		;;
 
@@ -323,14 +359,16 @@ do
  		;;
 
  		24)
-        echo -e "${c}Installing LinkFinder in $HOME/tools"; $r
-        cd && cd tools
-        git clone --depth 1 https://github.com/GerbenJavado/LinkFinder.git
-        cd LinkFinder
-        sudo pip install argparse jsbeautifier
-        sudo python setup.py install
-        echo -e "${c}LinkFinder Installed Successfully."; $r
-        ;;
+		echo -e "${c}Installing LinkFinder in $HOME/tools"; $r
+		cd && cd tools
+		git clone --depth 1 https://github.com/GerbenJavado/LinkFinder.git
+		cd LinkFinder
+		checkInstalled python3 installPython3
+		sudo apt install -y python3-pip
+		sudo pip3 install argparse jsbeautifier
+		sudo python3 setup.py install
+		echo -e "${c}LinkFinder Installed Successfully."; $r
+		;;
 
 		25)
 		echo -e "${c}Installing VirtualBox"; $r
