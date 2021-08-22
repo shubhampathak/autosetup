@@ -239,7 +239,7 @@ do
 
 		10) 
 		echo -e "${c}Installing Drozer Framework"; $r
-		wget https://github.com/mwrlabs/drozer/releases/download/2.4.4/drozer_2.4.4.deb
+		wget https://github.com/FSecureLABS/drozer/releases/download/2.4.4/drozer_2.4.4.deb 
 		sudo dpkg -i drozer_2.4.4.deb
 		sudo apt install -y -f
 		rm -f drozer_2.4.4.deb
@@ -341,7 +341,7 @@ do
 		22)
 		echo -e "${c}Installing Knockpy in $HOME/tools"; $r
 		cd && cd tools
-		sudo apt install -y python-dnspython python3-dnspython python3-setuptools python3-dev
+		sudo apt install -y python3-dnspython python3-setuptools python3-dev
 		git clone --depth 1 https://github.com/guelfoweb/knock.git
 		cd knock
 		checkInstalled python3 installPython3
