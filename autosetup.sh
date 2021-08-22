@@ -144,7 +144,7 @@ options=(1 "Visual Studio Code" off
 	11 "Jadx" off
 	12 "httprobe" off
 	13 "SQLMAP" off
-	14 "Yara" off
+	14 "Nuclei" off
 	15 "i3 Window Manager" off
 	16 "Aquatone" off
 	17 "Skype" off
@@ -270,18 +270,10 @@ do
 		;;
 
 		14) 
-		echo -e "${c}Installing Yara v3.10.0"; $r
-		cd && cd tools
-		wget https://github.com/VirusTotal/yara/archive/v3.10.0.tar.gz
-		tar -zxf v3.10.0.tar.gz
-		rm -f v3.10.0.tar.gz
-		cd yara-3.10.0
-		sudo ./bootstrap.sh
-		sudo ./configure --with-crypto
-		sudo make
-		sudo make check
-		sudo make install
-		echo -e "${c}Yara Setup Successfully."; $r
+		echo -e "${c}Installing Nuclei"; $r
+		checkInstalled go installGo
+		GO111MODULE=on go get -v github.com/projectdiscovery/nuclei/v2/cmd/nuclei
+		echo -e "${c}Nuclei Installed Successfully."; $r
 		;;
 
 		15) 
@@ -307,9 +299,9 @@ do
 		;;
 
 		18) 
-		echo -e "${c}Installing NodeJS"; $r
+		echo -e "${c}Installing NodeJS (current)"; $r
 		cd
-		curl -sL https://deb.nodesource.com/setup_12.x | sudo bash - #Submit the version according to your need.
+		curl -fsSL https://deb.nodesource.com/setup_current.x | sudo -E bash -
 		sudo apt install -y nodejs
 		( set -x; nodejs -v )
 		echo -e "${c}NodeJS Installed Successfully."; $r
