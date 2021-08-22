@@ -6,8 +6,6 @@
 # Tested against Debian based distributions like Ubuntu and Kali Linux.                          #        
 ##################################################################################################
 
-set -e
-
 c='\e[32m' # Coloured echo (Green)
 y=$'\033[38;5;11m' # Coloured echo (yellow)
 r='tput sgr0' #Reset colour after echo
@@ -32,7 +30,7 @@ for i in `seq 3 -1 1` ; do echo -ne "$i\rThe setup will start in... " ; sleep 1 
 
 # Required dependencies for all softwares (important)
 echo -e "${c}Installing complete dependencies pack."; $r
-sudo apt install -y software-properties-common apt-transport-https build-essential checkinstall libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libc6-dev libbz2-dev autoconf automake libtool make g++ unzip flex bison gcc libyaml-dev libreadline-dev zlib1g zlib1g-dev libncurses5-dev libffi-dev libgdbm-dev libpq-dev libpcap-dev libmagickwand-dev libappindicator3-1 libindicator3-7 libcurl4 libcurl4-openssl-dev mlocate imagemagick xdg-utils
+sudo apt install -y software-properties-common apt-transport-https build-essential checkinstall libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libc6-dev libbz2-dev autoconf automake libtool make g++ unzip flex bison gcc libyaml-dev libreadline-dev zlib1g zlib1g-dev libncurses5-dev libffi-dev libgdbm-dev libpq-dev libpcap-dev libmagickwand-dev libcurl4 libcurl4-openssl-dev mlocate imagemagick xdg-utils
 
 # Show Battery Percentage on Top Bar [Debian (gnome)]
 if [[ $XDG_CURRENT_DESKTOP =~ 'GNOME' ]]; then
