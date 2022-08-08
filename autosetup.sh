@@ -76,7 +76,7 @@ mkdir -p tools
 
 installGo() {
     # $version will fetch the latest version of Go from the official download page.
-    version=$(curl -s https://golang.org/dl/ | grep -o "go[0-9.]*linux-amd64.tar.gz" | head -n1)
+    version=$(curl -s https://go.dev/dl/ | grep -o "go[0-9.]*linux-amd64.tar.gz" | head -n1)
 	echo -e "${c}Installing Go version $version"; $r
 	cd
 	wget -q https://dl.google.com/go/$version
