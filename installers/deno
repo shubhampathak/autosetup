@@ -1,0 +1,29 @@
+#!/bin/bash
+
+PACK_NAME="Deno"
+PACK_CONTENT="Deno last version"
+
+# Package setup function
+pack-setup(){
+    echo "installing $PACK_NAME..."
+
+    # Installation
+    curl -fsSL https://deno.land/x/install/install.sh | sh
+
+    # Set enviroment
+    string="
+export DENO_INSTALL=\"$HOME/.deno\"
+export PATH=\"\$DENO_INSTALL/bin:\$PATH\"\n
+# Deno end\n"
+
+    # Bash
+    if command -v bash >/dev/null 2>&1; then 
+        echo "$string" >> "$HOME/.bashrc"
+    fi
+    # Zsh
+    if  command -v zsh >/dev/null 2>&1; then 
+        echo "$string" >> "$HOME/.zshrc"
+    fi
+
+    echo "$PACK_NAME installed sucessfully."
+}

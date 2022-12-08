@@ -1,0 +1,12 @@
+#!/bin/bash
+
+PACK_NAME="Python Package"
+PACK_CONTENT="python3, pip3, python3-venv, ipython"
+
+pack-setup(){
+    echo "installing $PACK_NAME..."
+    sudo nala install -y python3 python3-pip python3-venv
+    sudo pip3 install ipython
+    echo "$PACK_NAME installed sucessfully."
+}
+

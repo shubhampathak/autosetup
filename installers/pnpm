@@ -1,0 +1,20 @@
+#!/bin/bash
+
+PACK_NAME="PNPM"
+PACK_CONTENT="Performant NPM"
+
+# Package setup function
+pack-setup(){
+    echo "installing $PACK_NAME..."
+    curl -fsSL https://get.pnpm.io/install.sh | sh
+
+    if command -v zsh >/dev/null 2>&1; then 
+        echo -e "
+export DENO_INSTALL=\"$HOME/.deno\"
+export PATH=\"\$DENO_INSTALL/bin:\$PATH\"\n
+# Deno end\n" >> "$HOME/.zshrc"
+    fi
+
+    echo "$PACK_NAME installed sucessfully."
+}
+
