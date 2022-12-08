@@ -26,7 +26,10 @@ chmod +x autosetup.sh
 
 ## List
 
-(TODO)
+- deno
+- pnpm
+- python package (python3, pip3, venv, ipython)
+- visual studio code
 
 ## Other features:
 
