@@ -104,16 +104,18 @@ read -p "${y}Do you want to setup Git global config? (y/n): " -r; $r
 echo
 if [[ $REPLY =~ ^[Yy]$ ]]; then
     echo -e "${c}Setting up global git config at ~/.gitconfig"; $r
-    git config --global color.ui true
-    read -p "Enter Your Full Name: " name
-    read -p "Enter Your Email: " email
+    git config --global color.ui auto
+    read -rp "Set default branch name (main): " defaultbranch
+    if [[ -z $defaultbranch ]]; then defaultbranch="main"; fi
+    read -rp "Enter Your Full Name: " name
+    read -rp "Enter Your Email: " email
+    git config --global init.defaultBranch "$defaultbranch"
     git config --global user.name "$name"
     git config --global user.email "$email"
     echo -e "${c}Git Setup Successfully!"; $r
 else
     echo -e "${c}Skipping!"; $r && :
 fi
-
 
 # Read list of installers
 installer_list=("${0%/*}"/installers/*)
