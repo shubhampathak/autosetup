@@ -17,7 +17,7 @@ chmod +x autosetup.sh
 ```
 ## Operations
 
-1. Install nala, wget, curl, snap, dns-utils.
+1. Install nala wget curl git zsh build-essential dnsutils net-tools neofetch
 2. Setup Git Global Config. (It'll ask for your name and email)*
 3. Show dialogbox (whiptail), where you can select the software(s) you want to install.
 4. Install selected software.
