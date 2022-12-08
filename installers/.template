@@ -5,7 +5,10 @@ PACK_CONTENT="Package content"
 
 # Package setup function
 pack-setup(){
+    echo "installing $PACK_NAME..."
     #Operations
     :
+
+    echo "$PACK_NAME installed sucessfully."
 }
 
