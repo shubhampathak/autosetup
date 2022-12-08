@@ -33,19 +33,8 @@ waitfor(){
 }
 
 
-# Checks if software is installed
-check() {
-    source ~/.profile
-    source ~/.bashrc
-
-    which "$1" &>/dev/null
-    return $?    
-}
-export -f check
-
-
 #Display Banner
-if [[ -n $(which figlet) ]]; then
+if command -v figlet >/dev/null 2>&1; then
     figlet AutoSetup
     echo -e "${y} - By Shubham Pathak (Edited by Angel Fuenmayor)\n"
 else 
@@ -81,7 +70,7 @@ waitfor sudo apt update
 
 # Installing nala
 echo -ne "${c}Installing nala... "; $r
-if check nala; then 
+if command -v nala >/dev/null 2>&1; then 
     echo "${y}done."
 else 
     waitfor sudo apt install -y nala
@@ -95,8 +84,8 @@ sudo nala update && sudo nala upgrade -y
 
 
 #Installing curl and wget
-echo -e "${c}Installing Curl, wget, git, DNS Utils, net-tools and neofetch"; $r
-sudo nala install -y wget curl git dnsutils net-tools neofetch
+echo -e "${c}Installing wget curl git zsh build-essential dnsutils net-tools neofetch"; $r
+sudo nala install -y wget curl git zsh build-essential dnsutils net-tools neofetch
 
 
 #Setting up Git
