@@ -11,9 +11,10 @@ y=$'\033[38;5;11m' # Coloured echo (yellow)
 re='\033[0;31m' # Coloured echo (red)
 r='tput sgr0' #Reset colour after echo
 
+
 # Shows spinner while waiting for process to end
 waitfor(){
-    "$@" &>/dev/null &
+    "$@" &>>"${0%/*}/logs.txt" &
     local PID=$!
     local i=1
     local spin="/-\|"
@@ -30,6 +31,18 @@ waitfor(){
     return $?
 }
 
+
+# Checks if software is installed
+check() {
+    source ~/.profile
+    source ~/.bashrc
+
+    which "$1" &>/dev/null
+    return $?    
+}
+export -f check
+
+
 #Display Banner
 if [[ -n $(which figlet) ]]; then
     figlet AutoSetup
@@ -45,30 +58,45 @@ echo -e "\n\n\n\n
                           - By Shubham Pathak (Edited by Angel Fuenmayor)\n"
 fi
 
+
 # Requesting sudo permissions
 echo -e "${c}Please grant ${y}sudo${c} permissions."; $r
-if sudo -v; then 
+if sudo -v -p "${y}[sudo] password for %u: "; then 
     echo -e "${c}Access Granted.\n"
     $r
 else
     echo -e "${re}Sorry, this script needs sudo permissions to perform the installation."
-    echo -e "If your user didn't have sudo access by default, follow the next tutorial:"
+    echo -e "${re}If your user didn't have sudo access by default, follow the next tutorial:"
     echo -e "${y}https://www.digitalocean.com/community/tutorials/how-to-create-a-new-sudo-enabled-user-on-ubuntu-22-04-quickstart"
     $r
     exit 1
 fi
 
 
-# Required dependencies for all softwares (important)
+# Updating list of available packages
 echo -ne "${c}Updating apt list of packages... "; $r
 waitfor sudo apt update
 
-exit
+
+# Installing nala
+echo -ne "${c}Installing nala... "; $r
+if check nala; then 
+    echo "${y}done."
+else 
+    waitfor sudo apt install -y nala
+fi
+
 
 # Upgrade and Update Command
 echo -e "${c}Updating and upgrading before performing further operations."; $r
-sudo apt update && sudo apt upgrade -y
-sudo apt --fix-broken install -y
+sudo nala fetch --auto --https-only
+sudo nala update && sudo nala upgrade -y
+
+
+#Installing curl and wget
+echo -e "${c}Installing Curl, wget, DNS Utils and net-tools"; $r
+sudo nala install -y wget curl dnsutils net-tools neofetch
+
 
 #Setting up Git
 read -p "${y}Do you want to setup Git global config? (y/n): " -r; $r
@@ -85,78 +113,11 @@ else
     echo -e "${c}Skipping!"; $r && :
 fi
 
-#Installing curl and wget
-echo -e "${c}Installing Curl and wget"; $r
-sudo apt-get install -y wget curl
 
-#Installing dig and net-tools
-echo -e "${c}Installing DNS Utils and net-tools"; $r
-sudo apt install -y dnsutils net-tools
-
-#Installing ADB and Fastboot
-echo -e "${c}Installing ADB and Fastboot"; $r
-sudo apt install -y android-tools-adb android-tools-fastboot
-
-#Creating Directory Inside $HOME
-echo -e "${c}Creating Directory named 'tools' inside $HOME directory."; $r
-cd
-mkdir -p tools
-
-installGo() {
-    # $version will fetch the latest version of Go from the official download page.
-    version=$(curl -s https://go.dev/dl/ | grep -o "go[0-9.]*linux-amd64.tar.gz" | head -n1)
-    echo -e "${c}Installing Go version $version"; $r
-    cd
-    wget -q https://dl.google.com/go/$version
-    sudo tar -C /usr/local -xzf $version
-    sudo rm -f $version
-    echo -e "${c}Setting up GOPATH as $HOME/go"; $r
-    echo "export GOPATH=$HOME/go" >> ~/.profile
-    echo "export PATH=$PATH:$GOPATH/bin:/usr/local/go/bin" >> ~/.profile
-    echo "export GOBIN=$HOME/go/bin" >> ~/.profile
-    echo "export GOROOT=/usr/local/go" >> ~/.profile
-    source ~/.profile
-    echo -e "${c}Go Installed Successfully."; $r
-}
-
-installPython3() {
-    sudo apt install -y python3
-}
-
-installCorretto() {
-    echo -e "${c}Setting up Amazon Corretto (OpenJDK)"; $r
-    wget -O- https://apt.corretto.aws/corretto.key | sudo apt-key add -
-    sudo add-apt-repository 'deb https://apt.corretto.aws stable main'
-    sudo apt update; sudo apt install -y java-16-amazon-corretto-jdk
-    ( set -x ; java -version )
-    echo -e "${c}Amazon Corretto Installed Successfully!"; $r
-}
-
-installSnap() {
-    #Snap Installation & Setup
-    echo -e "${c}Installing Snap & setting up."; $r
-    sudo apt install -y snapd
-    sudo systemctl start snapd
-    sudo systemctl enable snapd
-    sudo systemctl start apparmor
-    sudo systemctl enable apparmor
-    export PATH=$PATH:/snap/bin
-    sudo snap refresh
-}
-
-checkInstalled() {
-    echo -e "${c}Checking if $1 is installed."; $r
-    source ~/.profile
-    source ~/.bashrc
-    if [[ -z $(which $1) ]]; then
-            echo -e "${c}$1 is not installed, installing it first."; $r
-            $2
-    else
-            echo -e "${c}$1 is already installed, Skipping."; $r
-    fi
-}
-
-
+exit
+######################################
+##########  TODO  ####################
+######################################
 #Executing Install Dialog
 dialogbox=(whiptail --separate-output --ok-button "Install" --title "Auto Setup Script" --checklist "\nPlease select required software(s):\n(Press 'Space' to Select/Deselect, 'Enter' to Install and 'Esc' to Cancel)" 30 80 20)
 options=(1 "Visual Studio Code" off
@@ -395,7 +356,12 @@ do
     esac
 done
 
+######################################
+##########END-TODO####################
+######################################
+
 # Final Upgrade and Update Command
 echo -e "${c}Updating and upgrading to finish auto-setup script."; $r
-sudo apt update && sudo apt upgrade -y
-sudo apt --fix-broken install -y
+sudo nala update && sudo nala upgrade -y
+clear
+neofetch

@@ -62,16 +62,6 @@ Also, the user can add custom package installers to add programs
 to the list or even create shell scripts that install multiple
 packages at once.
 
-### 3 - snapshot the packages
-
-The packages.txt would be a textfile containing all the installed packages.
-Keeps track of installed packages for updates.
-
-```
-packages.txt
-autosetup.sh
-```
-
 ## Contributions
 
 We hope that you will consider contributing to autosetup. Please read this short overview [Contribution Guidelines](https://github.com/shubhampathak/autosetup/blob/master/CONTRIBUTING.md) for some information about how to get started. 
